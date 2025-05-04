@@ -147,6 +147,10 @@ input[type='email']::placeholder {
   margin-bottom: 30px;
 }
 
+.generate_Btn:hover {
+  background-color: #de5e4e;
+}
+
 .footer a {
   color: hsl(245, 19%, 35%);
   text-decoration: none;
@@ -294,7 +298,7 @@ input[type='email']::placeholder {
 #avatar_error {
   text-align: left;
   font-size: 0.8rem;
-  color: hsl(245, 19%, 35%);
+  color: red;
 }
 #email_error i,
 #fullName_error i,
