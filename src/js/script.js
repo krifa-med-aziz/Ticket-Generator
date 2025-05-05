@@ -5,6 +5,7 @@ const emailInput = document.querySelector('#email');
 const avatarInput = document.querySelector('#avatar');
 const nameOutput = document.querySelector('#name-output');
 const emailOutput = document.querySelector('#email-output');
+
 const ticketName = document.querySelector('#ticket-name');
 const ticketCode = document.querySelector('#ticket_id');
 const ticketUserAvatar = document.querySelector('#user_logo');
@@ -60,6 +61,7 @@ const randomCode = () => {
 generateBtn.addEventListener('click', function (e) {
   e.preventDefault();
 
+  // check Avatar
   if (!avatarFileValid) {
     avatarError.innerHTML = `<i class="fa-solid fa-circle-info"></i>Avatar required`;
     avatarError.classList.remove('hidden');
@@ -126,6 +128,29 @@ avatarInput.addEventListener('change', () => {
                       <button class="avatar_btn" id="change_image_btn">Change image</button>
                    </div>`;
       ticketUserAvatar.src = e.target.result;
+      avatarInput.style.height = '0%';
+
+      const removeImageBtn = document.querySelector('#remove_image_btn');
+      const changeImageBtn = document.querySelector('#change_image_btn');
+
+      removeImageBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        avatarInput.value = '';
+        uploadContent.innerHTML = `
+            <img
+                id="upload_icon"
+                src="./img/icon-upload.svg"
+                alt="upload icon"
+            />
+            <p id="upload_text">Drag and drop or click to upload</p>`;
+        ticketUserAvatar.src = '';
+        avatarInput.style.height = '100%';
+        avatarFileValid = false;
+      });
+      changeImageBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        avatarInput.click();
+      });
     };
     reader.readAsDataURL(avatarFile);
     avatarError.classList.add('hidden');
@@ -134,17 +159,17 @@ avatarInput.addEventListener('change', () => {
 });
 
 // Drag and Drop
-uploadBox.addEventListener('dragenter', function (e) {
+uploadBox.addEventListener('dragenter', e => {
   e.preventDefault();
   uploadBox.classList.add('dragover');
 });
 
-uploadBox.addEventListener('dragover', function (e) {
+uploadBox.addEventListener('dragover', e => {
   e.preventDefault();
   uploadBox.classList.add('dragover');
 });
 
-uploadBox.addEventListener('dragleave', function (e) {
+uploadBox.addEventListener('dragleave', e => {
   e.preventDefault();
   uploadBox.classList.remove('dragover');
 });
