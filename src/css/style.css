@@ -107,15 +107,43 @@ input[type='email'],
   align-items: center;
   margin-bottom: 0;
 }
+
+#upload_avatar {
+  width: 80px;
+  height: 80px;
+  border: solid 1px hsl(252, 6%, 83%);
+  border-radius: 20px;
+}
+
+.avatar_btn {
+  margin-top: 10px;
+}
+
+.avatar_btn {
+  font-family: 'Inconsolata', monospace;
+  color: hsl(252, 6%, 83%);
+  background-color: hsla(245, 19%, 35%, 0.5);
+  padding: 5px 10px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+}
+
 #upload_icon {
   padding: 10px;
   background-color: hsla(245, 19%, 35%);
   border-radius: 20%;
   margin-bottom: 10px;
 }
+
+.upload-box.dragover {
+  background-color: #e9f5ff4d;
+}
+
 #upload_text {
   color: hsl(245, 19%, 35%);
 }
+
 input[type='file'] {
   position: absolute;
   inset: 0;

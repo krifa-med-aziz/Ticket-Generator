@@ -2,10 +2,12 @@
 
 const fullNameInput = document.querySelector('#Fullname');
 const emailInput = document.querySelector('#email');
+const avatarInput = document.querySelector('#avatar');
 const nameOutput = document.querySelector('#name-output');
 const emailOutput = document.querySelector('#email-output');
 const ticketName = document.querySelector('#ticket-name');
 const ticketCode = document.querySelector('#ticket_id');
+const ticketUserAvatar = document.querySelector('#user_logo');
 
 const formContainer = document.querySelector('#form_container');
 const ticketContainer = document.querySelector('#ticket-container');
@@ -15,9 +17,13 @@ const fullNameError = document.querySelector('#fullName_error');
 const emailError = document.querySelector('#email_error');
 const avatarError = document.querySelector('#avatar_error');
 
+const uploadContent = document.querySelector('.upload-content');
+const uploadBox = document.querySelector('#upload-box');
+
 // Valide Form
 let emailValid = false;
 let nameValid = false;
+let avatarFileValid = false;
 fullNameInput.addEventListener('keyup', () => {
   const words = fullNameInput.value.trim().split(/\s+/);
   if (fullNameInput.value === '' || !(words.length >= 2)) {
@@ -53,15 +59,24 @@ const randomCode = () => {
 // Generate Ticket
 generateBtn.addEventListener('click', function (e) {
   e.preventDefault();
-  if (!emailValid) {
-    emailError.innerHTML = `<i class="fa-solid fa-circle-info"></i>Email invalid`;
-    emailError.classList.remove('hidden');
+
+  if (!avatarFileValid) {
+    avatarError.innerHTML = `<i class="fa-solid fa-circle-info"></i>Avatar required`;
+    avatarError.classList.remove('hidden');
   }
+  // check Fullname
   if (!nameValid) {
     fullNameError.innerHTML = `<i class="fa-solid fa-circle-info"></i>FullName required`;
     fullNameError.classList.remove('hidden');
   }
-  if (emailValid && nameValid) {
+
+  // check email
+  if (!emailValid) {
+    emailError.innerHTML = `<i class="fa-solid fa-circle-info"></i>Email invalid`;
+    emailError.classList.remove('hidden');
+  }
+
+  if (emailValid && nameValid && avatarFileValid) {
     formContainer.classList.add('hidden');
     ticketContainer.classList.remove('hidden');
     const fullName = fullNameInput.value.split(' ');
@@ -72,5 +87,75 @@ generateBtn.addEventListener('click', function (e) {
     ticketName.textContent = capitalized;
     emailOutput.textContent = emailInput.value;
     ticketCode.textContent = randomCode();
+  }
+});
+
+avatarInput.addEventListener('change', () => {
+  const avatarFile = avatarInput.files[0];
+  if (!avatarFile) {
+    avatarError.innerHTML = `<i class="fa-solid fa-circle-info"></i>Upload an avatar`;
+    avatarError.classList.remove('hidden');
+    return;
+  }
+  // test image type
+  if (
+    !avatarFile.type.match('image/jpeg') &&
+    !avatarFile.type.match('image/png')
+  ) {
+    avatarError.innerHTML = `<i class="fa-solid fa-circle-info"></i>Please upload a JPG or PNG image.`;
+    avatarError.classList.remove('hidden');
+    return;
+  }
+  // test image size (500KB max)
+  if (avatarFile.size > 500 * 1024) {
+    avatarError.innerHTML = `<i class="fa-solid fa-circle-info"></i>File size exceeds 500KB. Please upload a smaller image.`;
+    avatarError.classList.remove('hidden');
+    return;
+  }
+  if (avatarFile) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      uploadContent.innerHTML = ` 
+                  <img
+                      id="upload_avatar"
+                      src="${e.target.result}"
+                      alt="upload avatar"
+                   />
+                   <div class="avatar_btns">
+                      <button class="avatar_btn" id="remove_image_btn">Remove image</button>
+                      <button class="avatar_btn" id="change_image_btn">Change image</button>
+                   </div>`;
+      ticketUserAvatar.src = e.target.result;
+    };
+    reader.readAsDataURL(avatarFile);
+    avatarError.classList.add('hidden');
+    avatarFileValid = true;
+  }
+});
+
+// Drag and Drop
+uploadBox.addEventListener('dragenter', function (e) {
+  e.preventDefault();
+  uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragover', function (e) {
+  e.preventDefault();
+  uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', function (e) {
+  e.preventDefault();
+  uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadBox.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    avatarInput.files = e.dataTransfer.files;
+    const event = new Event('change'); // Trigger same behavior as change event
+    avatarInput.dispatchEvent(event);
   }
 });
